@@ -16,11 +16,8 @@ def drop_mongodb_database(url, db_name):
         port = parsed_url.port
         client = pymongo.MongoClient(host=hostname, port=port,
                                      username=username, password=password)
-        
         db = client[db_name]
         client.drop_database(db_name)
-        
         print(f"Database '{db_name}' deleted successfully.")
-        
     except Exception as e:
         print(f"An error occurred: {e}")
