@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import subprocess
 
 
@@ -12,7 +10,9 @@ def pip_install(dependancy):
 
 def execute_bash(command):
     try:
-        return subprocess.check_output(command, shell=True, text=True)
+        return subprocess.run(
+            command, check=True, stdout=subprocess.PIPE, text=True
+        ).stdout.replace("\n", "")
     except Exception as e:
         print("Failed to execute '{command}'", e)
         return None

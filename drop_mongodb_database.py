@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from urllib.parse import urlparse
 
 from utils import pip_install
