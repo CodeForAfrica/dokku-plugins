@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+
+import sys
+
+from drop_mongodb_database import drop_mongodb_database
+from utils import execute_bash
+
+app_name = sys.argv[1] if len(sys.argv) > 1 else None
+
+if __name__ == "__main__":
+    if app_name:
+        app_name_pr_number = app_name.split("-pr-")
+        if len(app_name_pr_number) == 2:
+            original_app_name = app_name_pr_number[0].strip()
+            command = f"dokku config:get {original_app_name} MONGODB_URL"
+            mongodb_url = execute_bash(command)
+            if mongodb_url:
+                drop_mongodb_database(mongodb_url, app_name)

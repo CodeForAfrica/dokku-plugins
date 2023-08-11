@@ -1,0 +1,4 @@
+[plugin]
+description = "Dokku plugin to add hooks to app directory"
+version = "0.1.0"
+[plugin.config]
