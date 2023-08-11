@@ -4,7 +4,10 @@ import subprocess
 def pip_install(dependancy):
     try:
         subprocess.run(
-            f"pip install {dependancy}", check=True, stdout=subprocess.PIPE, text=True
+            f"pip install --user {dependancy}",
+            check=True,
+            stdout=subprocess.PIPE,
+            text=True,
         )
     except subprocess.CalledProcessError:
         print("Failed to install '{dependancy}'")
