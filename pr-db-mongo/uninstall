@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+PLUGIN="$1"
+echo $PLUGIN
+
+[[ "$PLUGIN" = "pr-db-mongo" ]] && rm -rf ./venv

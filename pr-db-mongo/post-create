@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+APP="$1";
+
+source ./venv/bin/activate
+
+python pr_db_mongo.py $APP CREATE
+
+deactivate
