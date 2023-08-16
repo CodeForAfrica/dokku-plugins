@@ -65,8 +65,7 @@ if __name__ == "__main__":
     if len(app_name_pr_number) == 2:
         original_app_name = app_name_pr_number[0].strip()
         command = ["dokku", "config:get", original_app_name, "MONGODB_URL"]
-        # mongodb_url = execute_bash(command)
-        mongodb_url = "mongodb://u:p@localhost"
+        mongodb_url = execute_bash(command)
         if mongodb_url:
             if action == "create":
                 configure_pr_app(app_name, mongodb_url)
