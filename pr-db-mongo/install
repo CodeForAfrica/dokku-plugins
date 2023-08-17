@@ -11,4 +11,4 @@ source "$DOKKU_ROOT/.venvs/pr-db-mongo/bin/activate"
 python -m pip install --upgrade pip
 python -m pip install -r "$PLUGIN_AVAILABLE_PATH/pr-db-mongo/requirements.txt"
 
-deactivatee
+deactivate
