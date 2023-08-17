@@ -2,11 +2,13 @@
 
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
-python3 -m venv venv
-source ./venv/bin/activate
+# Creating venv in $PLUGIN_AVAILABLE_PATH causes issue for Dokku
+# hence we'll create it in user dokku home dir
+mkdir -p "$DOKKU_ROOT/.venvs"
+python3 -m venv "$DOKKU_ROOT/.venvs/pr-db-mongo"
+source "$DOKKU_ROOT/.venvs/pr-db-mongo/bin/activate"
 
 python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+python -m pip install -r "$PLUGIN_AVAILABLE_PATH/pr-db-mongo/requirements.txt"
 
-deactivate
-
+deactivatee
