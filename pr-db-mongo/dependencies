@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+mongodb_version="4.4.3"
+mongodb_base_url="https://fastdl.mongodb.org/tools/db"
+
+# Specify the directory where you want to install the tools
+install_directory="/usr/local/bin"
+download_file="mongodb-database-tools-${mongodb_version}-$(uname -s)-$(uname -m).tgz"
+
+curl -O "${mongodb_base_url}/${mongodb_version}/${download_file}"
+tar -xzf ${download_file}
+mv "mongodb-database-tools-${mongodb_version}/bin/"* "$install_directory"
+
+# Clean up the downloaded files
+rm -rf "mongodb-database-tools-${mongodb_version}" ${download_file}
+echo "MongoDB tools version ${mongodb_version} installed to ${install_directory}"
