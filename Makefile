@@ -21,7 +21,8 @@ build: build-pr-db-mongo
 
 ## build 'pr-db-mongo' plugin
 build-pr-db-mongo: make-build-dir
-	tar -zcf build/pr-db-mongo.tgz pr-db-mongo
+	rm -rf pr-db-mongo/venv
+	tar --create --no-xattrs --disable-copyfile --file build/pr-db-mongo.tgz pr-db-mongo
 
 # create 'build' output dir
 make-build-dir:
