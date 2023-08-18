@@ -1,6 +1,7 @@
 import subprocess
 import sys
 from urllib.parse import quote_plus, urlsplit, urlparse, urlunparse
+import os
 
 import pymongo
 
@@ -52,9 +53,9 @@ def clone_pr_database(original_db_url, app_name):
     try:
         source = pymongo.uri_parser.parse_uri(original_db_url).get("database")
         uri = get_uri(original_db_url)
-        archive="/"
-        mongodump = ["mongodump", f"--uri='{uri}'", f"--archive={archive}", "--db='{source}'"]
-        mongorestore = ["mongorestore", f"--uri='{uri}'", f"--archive={archive}", "--nsFrom='{source}.*'", "--nsTo='{app_name}.*'", "--nsInclude='{source}.*'"]
+        archive=current_directory = os.getcwd()
+        mongodump = ["mongodump", f"--uri='{uri}'", f"--archive={archive}", f"--db='{source}'"]
+        mongorestore = ["mongorestore", f"--uri='{uri}'", f"--archive={archive}", f"--nsFrom='{source}.*'", f"--nsTo='{app_name}.*'", f"--nsInclude='{source}.*'"]
         execute_bash(mongodump)
         execute_bash(mongorestore)
     except Exception as e:
