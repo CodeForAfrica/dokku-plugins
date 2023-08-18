@@ -37,8 +37,8 @@ def configure_pr_app(app_name, uri):
         commands = [
             ["dokku", "config:set", "--no-restart", app_name, f"MONGODB_URL={db_url}"],
             # TODO: get main domain from original app and modify it
-            # ["dokku", "domains:add", app_name, f"{app_name}.dev.codeforafrica.org"],
-            # ["dokku", "letsencrypt:enable", app_name],
+            ["dokku", "domains:add", app_name, f"{app_name}.dev.codeforafrica.org"],
+            ["dokku", "letsencrypt:enable", app_name],
         ]
         for command in commands:
             execute_bash(command)
@@ -53,9 +53,9 @@ def clone_pr_database(original_db_url, app_name):
     try:
         source = pymongo.uri_parser.parse_uri(original_db_url).get("database")
         uri = get_uri(original_db_url)
-        archive=current_directory = os.getcwd()
-        mongodump = ["mongodump", f"--uri='{uri}'", f"--archive={archive}", f"--db='{source}'"]
-        mongorestore = ["mongorestore", f"--uri='{uri}'", f"--archive={archive}", f"--nsFrom='{source}.*'", f"--nsTo='{app_name}.*'", f"--nsInclude='{source}.*'"]
+        archive = os.path.join(os.path.expanduser("~"), "archive")
+        mongodump = ["mongodump", f"--uri={uri}", f"--archive={archive}", f"--db={source}"]
+        mongorestore = ["mongorestore", f"--uri={uri}", f"--archive={archive}", f"--nsFrom={source}.*", f"--nsTo={app_name}.*", f"--nsInclude={source}.*"]
         execute_bash(mongodump)
         execute_bash(mongorestore)
     except Exception as e:
