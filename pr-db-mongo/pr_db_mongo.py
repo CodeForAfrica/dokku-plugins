@@ -11,7 +11,7 @@ PLUGIN_NAME = "pr-db-mongo"
 def execute_bash(command):
     return subprocess.run(command, check=True, capture_output=True, text=True)
 
-def get_uri(db_url):
+def get_uri(db_url, db_name=''):
     split_url = urlsplit(db_url)
     username = split_url.username
     password = split_url.password
@@ -21,18 +21,12 @@ def get_uri(db_url):
     query = split_url.query
     credentials = ":".join([quote_plus(c) for c in (username, password)])
     host = f"{hostname}:{port}" if port else hostname
-    options = f"/?{query}" if query else ""
+    options = f"/{db_name}?{query}" if query else ""
     return f"{scheme}://{credentials}@{host}{options}"
-
-def get_database_uri(mongo_uri, database_name):
-    parsed_uri = urlsplit(mongo_uri)
-    uri_parts = list(parsed_uri)
-    uri_parts[2] = database_name
-    return urlunparse(uri_parts)
 
 def configure_pr_app(app_name, uri):
     print(f"{PLUGIN_NAME}: configuring '{app_name}' ... ", end="")
-    db_url = get_database_uri(uri, app_name)
+    db_url = get_uri(uri, app_name)
     try:
         commands = [
             ["dokku", "config:set", "--no-restart", app_name, f"MONGODB_URL={db_url}"],
