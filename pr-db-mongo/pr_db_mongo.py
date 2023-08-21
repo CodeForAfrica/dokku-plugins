@@ -1,6 +1,6 @@
 import subprocess
 import sys
-from urllib.parse import quote_plus, urlsplit, urlparse, urlunparse
+from urllib.parse import quote_plus, urlsplit, urlunparse
 import os
 
 import pymongo
@@ -25,7 +25,7 @@ def get_uri(db_url):
     return f"{scheme}://{credentials}@{host}{options}"
 
 def get_database_uri(mongo_uri, database_name):
-    parsed_uri = urlparse(mongo_uri)
+    parsed_uri = urlsplit(mongo_uri)
     uri_parts = list(parsed_uri)
     uri_parts[2] = database_name
     return urlunparse(uri_parts)
