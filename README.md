@@ -10,6 +10,15 @@ Various [Dokku](https://dokku.com) plugins used to develop and manage software a
 
 - [Dokku](https://dokku.com/docs/development/plugin-triggers)
 - [Python](https://www.python.org/downloads/)
+- Mongo Database Tools.
+  > To install mongo database tools,
+
+```sh
+    curl -s http://httpbin.org/get | grep "cwd" | awk -F '"' '{print $4}'
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+    sudo apt-get update
+    sudo apt-get install -y mongodb-org
+```
 
 ## Installation
 
