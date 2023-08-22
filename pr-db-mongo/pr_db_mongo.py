@@ -24,7 +24,7 @@ def get_uri(db_url, db_name=''):
     options = f"/{db_name}?{query}" if query else ""
     return f"{scheme}://{credentials}@{host}{options}"
 
-def configure_pr_app(app_name, uri):
+def configure_pr_app(uri, app_name):
     print(f"{PLUGIN_NAME}: configuring '{app_name}' ... ", end="")
     db_url = get_uri(uri, app_name)
     try:
@@ -47,17 +47,14 @@ def clone_pr_database(original_db_url, app_name):
     try:
         source = pymongo.uri_parser.parse_uri(original_db_url).get("database")
         uri = get_uri(original_db_url)
-        archive = os.path.join(os.path.expanduser("~"), "archive")
-        mongodump = ["mongodump", f"--uri={uri}", f"--archive={archive}", f"--db={source}"]
-        mongorestore = ["mongorestore", f"--uri={uri}", f"--archive={archive}", f"--nsFrom={source}.*", f"--nsTo={app_name}.*", f"--nsInclude={source}.*"]
-        execute_bash(mongodump)
-        execute_bash(mongorestore)
+        command = ["mongodump", "-vvvvv", f"--archive", f"--uri={uri}", f"--db={source}", "|", "mongorestore", "-vvvvv", f"--uri={uri}", f"--archive", f"--nsFrom={source}.*", f"--nsTo={app_name}.*", f"--nsInclude={source}.*"]
+        execute_bash(command)
     except Exception as e:
         print("failed to clone database")
         print(f"{PLUGIN_NAME}:", e)
         sys.exit(1)
 
-def delete_pr_database(db_name, uri):
+def delete_pr_database(uri, db_name):
     print(f"{PLUGIN_NAME}: deleting database '{db_name}' ... ", end="")
 
     try:
@@ -87,8 +84,8 @@ if __name__ == "__main__":
             uri = get_uri(mongodb_url)
             if action == "create":
                 clone_pr_database(mongodb_url, app_name)
-                configure_pr_app(app_name, uri)
+                configure_pr_app(uri, app_name)
             else:  # action == "delete":
-                delete_pr_database(app_name, uri)
+                delete_pr_database(uri=uri, db_name=app_name)
         # else: no MONGODB_URL found, silently skip
     # else: app doesn't follow naming convention, silently skip

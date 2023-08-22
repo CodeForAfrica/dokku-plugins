@@ -14,7 +14,7 @@ Various [Dokku](https://dokku.com) plugins used to develop and manage software a
   > To install mongo database tools,
 
 ```sh
-    curl -s http://httpbin.org/get | grep "cwd" | awk -F '"' '{print $4}'
+    wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
     echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
     sudo apt-get update
     sudo apt-get install -y mongodb-org
@@ -58,20 +58,6 @@ mv pr-db-mongo /var/lib/dokku/plugins/available
 
 ```bash
 sudo dokku plugin:enable plugin-name
-```
-
-### Enable the plugin
-
-```bash
-sudo dokku plugin:enable plugin-name
-```
-
-### Install plugin dependencies
-
-This should only be executed once to avoid modifying syste settings
-
-```bash
-sudo dokku plugin:install-dependancies
 ```
 
 That's it. Happy coding!
