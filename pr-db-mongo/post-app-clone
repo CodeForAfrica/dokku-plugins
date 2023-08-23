@@ -6,6 +6,6 @@ APP="$1";
 
 source "$DOKKU_ROOT/.venvs/pr-db-mongo/bin/activate"
 
-python "$PLUGIN_AVAILABLE_PATH/pr-db-mongo/pr_db_mongo.py" $APP CREATE
+python "$PLUGIN_AVAILABLE_PATH/pr-db-mongo/pr_db_mongo.py" $APP SETUP
 
 deactivate

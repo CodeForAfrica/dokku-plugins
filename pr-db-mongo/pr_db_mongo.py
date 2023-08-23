@@ -43,7 +43,8 @@ def configure_pr_app(uri, app_name):
 
 def clone_pr_database(original_db_url, app_name):
     try:
-        source = pymongo.uri_parser.parse_uri(original_db_url).get("database")
+        parsed_url = urlsplit(original_db_url)
+        source = parsed_url.path.lstrip('/')
         uri = get_uri(original_db_url)
         command = ["mongodump", "-vvvvv", f"--archive", f"--uri={uri}", f"--db={source}", "|", "mongorestore", "-vvvvv", f"--uri={uri}", f"--archive", f"--nsFrom={source}.*", f"--nsTo={app_name}.*", f"--nsInclude={source}.*"]
         execute_bash(command)
@@ -52,11 +53,11 @@ def clone_pr_database(original_db_url, app_name):
         print(f"{PLUGIN_NAME}:", e)
         sys.exit(1)
 
-def delete_pr_database(uri, db_name):
+def delete_pr_database(mongodb_url, db_name):
     print(f"{PLUGIN_NAME}: deleting database '{db_name}' ... ", end="")
-
+    uri = get_uri(mongodb_url, db_name)
     try:
-        command=["mongosh", uri, "--eval", f"use {db_name}",  "--eval", "db.dropDatabase()"]
+        command=["mongo", uri,  "--eval", "db.dropDatabase()"]
         execute_bash(command)
 
         print("done")
@@ -66,11 +67,16 @@ def delete_pr_database(uri, db_name):
         sys.exit(1)
 
 
+def setup_pr_app(mongodb_url, app_name):
+    uri = get_uri(mongodb_url)
+    clone_pr_database(mongodb_url, app_name)
+    configure_pr_app(uri, app_name)
+
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         sys.exit(f"{PLUGIN_NAME} <dokku app name> <create|delete> ({sys.argv})")
     action = sys.argv[2].lower()
-    if action not in ["create", "delete"]:
+    if action not in ["setup", "delete"]:
         sys.exit(f"{PLUGIN_NAME} <dokku app name> <create|delete>")
     app_name = sys.argv[1]
     app_name_pr_number = app_name.split("-pr-")
@@ -79,11 +85,9 @@ if __name__ == "__main__":
         command = ["dokku", "config:get", original_app_name, "MONGODB_URL"]
         mongodb_url = execute_bash(command).stdout.strip()
         if mongodb_url:
-            uri = get_uri(mongodb_url)
-            if action == "create":
-                clone_pr_database(mongodb_url, app_name)
-                configure_pr_app(uri, app_name)
+            if action == "setup":
+                setup_pr_app(mongodb_url, app_name)
             else:  # action == "delete":
-                delete_pr_database(uri=uri, db_name=app_name)
+                delete_pr_database(mongodb_url, db_name=app_name)
         # else: no MONGODB_URL found, silently skip
     # else: app doesn't follow naming convention, silently skip
