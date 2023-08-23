@@ -3,8 +3,6 @@ import sys
 from urllib.parse import quote_plus, urlsplit, urlunparse
 import os
 
-import pymongo
-
 PLUGIN_NAME = "pr-db-mongo"
 
 
@@ -58,8 +56,8 @@ def delete_pr_database(uri, db_name):
     print(f"{PLUGIN_NAME}: deleting database '{db_name}' ... ", end="")
 
     try:
-        client = pymongo.MongoClient(uri)
-        client.drop_database(db_name)
+        command=["mongosh", uri, "--eval", f"use {db_name}",  "--eval", "db.dropDatabase()"]
+        execute_bash(command)
 
         print("done")
     except Exception as e:
