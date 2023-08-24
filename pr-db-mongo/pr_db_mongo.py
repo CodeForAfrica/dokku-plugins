@@ -30,7 +30,7 @@ def configure_pr_app(original_mongodb_url, app_name):
         ["dokku", "config:set", "--no-restart", app_name, f"MONGODB_URL={mongodb_url}"],
         # TODO: get main domain from original app and modify it
         ["dokku", "domains:add", app_name, f"{app_name}.dev.codeforafrica.org"],
-        # ["dokku", "letsencrypt:enable", app_name],
+        ["dokku", "letsencrypt:enable", app_name],
     ]
     for command in commands:
         execute_bash(command)
