@@ -5,8 +5,8 @@ from urllib.parse import quote_plus, urlsplit
 PLUGIN_NAME = "pr-db-mongo"
 
 
-def execute_bash(command):
-    return subprocess.run(command, check=True, capture_output=True, text=True)
+def execute_bash(command, **kwargs):
+    return subprocess.run(command, check=True, capture_output=True, text=True, *kwargs)
 
 
 def get_uri(db_url, db_name=""):
@@ -30,7 +30,7 @@ def configure_pr_app(original_mongodb_url, app_name):
         ["dokku", "config:set", "--no-restart", app_name, f"MONGODB_URL={mongodb_url}"],
         # TODO: get main domain from original app and modify it
         ["dokku", "domains:add", app_name, f"{app_name}.dev.codeforafrica.org"],
-        ["dokku", "letsencrypt:enable", app_name],
+        # ["dokku", "letsencrypt:enable", app_name],
     ]
     for command in commands:
         execute_bash(command)
@@ -40,22 +40,13 @@ def clone_pr_database(original_mongodb_url, app_name):
     split_url = urlsplit(original_mongodb_url)
     source = split_url.path.lstrip("/")
     uri = get_uri(original_mongodb_url)
-    command = [
-        "mongodump",
-        "-vvvvv",
-        "--archive",
-        f"--uri={uri}",
-        f"--db={source}",
-        "|",
-        "mongorestore",
-        "-vvvvv",
-        f"--uri={uri}",
-        "--archive",
-        f"--nsFrom={source}.*",
-        f"--nsTo={app_name}.*",
-        f"--nsInclude={source}.*",
-    ]
-    execute_bash(command)
+    command1 = [f"mongodump", "-vvvvv", "--archive", f"--uri={uri}",f"--db={source}",]
+    command2 = [f"mongorestore","-vvvvv",f"--uri={uri}","--archive",f"--nsFrom={source}.*",f"--nsTo={app_name}.*", f"--nsInclude={source}.*"]
+    proc1 = subprocess.Popen(command1, stdout=subprocess.PIPE)
+    proc2 = subprocess.Popen(command2, stdin=proc1.stdout)
+
+    proc1.stdout.close()
+    proc2.communicate()
 
 
 def setup_pr_app(original_mongodb_url, app_name):
