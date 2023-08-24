@@ -60,6 +60,12 @@ mv pr-db-mongo /var/lib/dokku/plugins/available
 sudo dokku plugin:enable plugin-name
 ```
 
+### Install Plugin
+
+```bash
+sudo dokku plugin:install
+```
+
 ### Install Dependencies
 
 ```bash
