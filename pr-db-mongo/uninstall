@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+PLUGIN="$1"
+
+[[ "$PLUGIN" = "pr-db-mongo" ]] && rm -rf "$DOKKU_ROOT/.venvs/pr-db-mongo"

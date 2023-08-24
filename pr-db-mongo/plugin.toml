@@ -1,0 +1,11 @@
+[plugin]
+name = "pr-db-mongo"
+description = "Setup & tear Mongo DB for reviews apps"
+version = "0.0.1"
+maintainer_name = "Code for Africa"
+maintainer_email = "tech@codeforafrica.org"
+website_url = "https://github.com/CodeForAfrica/dokku-plugins"
+
+[plugin.config]
+
+[plugin.compatibility]
