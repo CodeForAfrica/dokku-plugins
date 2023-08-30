@@ -27,6 +27,7 @@ def get_uri(db_url, db_name=""):
 def configure_pr_app(original_mongodb_url, app_name):
     mongodb_url = get_uri(original_mongodb_url, app_name)
     commands = [
+        ["dokku", "config:set", "--no-restart", app_name, f"PAYLOAD_PUBLIC_APP_URL={mongodb_url}"],
         ["dokku", "config:set", "--no-restart", app_name, f"MONGODB_URL={mongodb_url}"],
         # TODO: get main domain from original app and modify it
         ["dokku", "domains:add", app_name, f"{app_name}.dev.codeforafrica.org"],
