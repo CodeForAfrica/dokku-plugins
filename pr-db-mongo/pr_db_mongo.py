@@ -26,11 +26,14 @@ def get_uri(db_url, db_name=""):
 
 def configure_pr_app(original_mongodb_url, app_name):
     mongodb_url = get_uri(original_mongodb_url, app_name)
+    app_url = f"PAYLOAD_PUBLIC_APP_URL=https://{app_name}.dev.codeforafrica.org"
     commands = [
-        ["dokku", "config:set", "--no-restart", app_name, f"PAYLOAD_PUBLIC_APP_URL={mongodb_url}"],
-        ["dokku", "config:set", "--no-restart", app_name, f"MONGODB_URL={mongodb_url}"],
+        ["dokku", "config:set", "--no-restart", app_name, app_url],
+        ["dokku", "config:set", "--no-restart",
+            app_name, f"MONGODB_URL={mongodb_url}"],
         # TODO: get main domain from original app and modify it
-        ["dokku", "domains:add", app_name, f"{app_name}.dev.codeforafrica.org"],
+        ["dokku", "domains:add", app_name,
+            f"{app_name}.dev.codeforafrica.org"],
         ["dokku", "letsencrypt:enable", app_name],
     ]
     for command in commands:
@@ -41,8 +44,10 @@ def clone_pr_database(original_mongodb_url, app_name):
     split_url = urlsplit(original_mongodb_url)
     source = split_url.path.lstrip("/")
     uri = get_uri(original_mongodb_url)
-    command1 = [f"mongodump", "-vvvvv", "--archive", f"--uri={uri}",f"--db={source}",]
-    command2 = [f"mongorestore","-vvvvv",f"--uri={uri}","--archive",f"--nsFrom={source}.*",f"--nsTo={app_name}.*", f"--nsInclude={source}.*"]
+    command1 = [f"mongodump", "-vvvvv", "--archive",
+                f"--uri={uri}", f"--db={source}",]
+    command2 = [f"mongorestore", "-vvvvv", f"--uri={uri}", "--archive",
+                f"--nsFrom={source}.*", f"--nsTo={app_name}.*", f"--nsInclude={source}.*"]
     proc1 = subprocess.Popen(command1, stdout=subprocess.PIPE)
     proc2 = subprocess.Popen(command2, stdin=proc1.stdout)
 
