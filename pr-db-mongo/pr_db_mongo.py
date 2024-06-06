@@ -72,7 +72,7 @@ def delete_pr_database(original_mongodb_url, db_name):
     print(f"{PLUGIN_NAME}: deleting database '{db_name}' ... ", end="")
     try:
         uri = get_uri(original_mongodb_url, db_name)
-        command = ["mongo", uri, "--eval", "db.dropDatabase()"]
+        command = ["mongosh", uri, "--eval", "db.dropDatabase()"]
         execute_bash(command)
 
         print("done")
