@@ -16,39 +16,8 @@ SSH into your Dev server:
 ssh azureuser@ui-1.dev.codeforafrica.org
 ```
 
-### 2. Create the Pruning Script
 
-Create a script to prune Docker images and make it executable.
-
-Create the Script
-Create a new file for the pruning script:
-
-```sh
-sudo nano prune_docker_images.sh
-```
-
-Add the following content to the script:
-
-```sh
-#!/bin/bash
-sudo docker image prune -f
-```
-
-#### Make the script executable:
-
-```sh
-sudo chmod +x prune_docker_images.sh
-```
-
-#### Verify Script Execution
-
-Test the pruning script manually to ensure it works:
-
-```sh
-/usr/local/bin/prune_docker_images.sh
-```
-
-### 3. Set Up the Cron Job
+### 2. Set Up the Cron Job
 
 Edit the cron table to schedule the pruning job every 4 hours.
 
@@ -64,7 +33,7 @@ Add the following line to schedule the job:
 0 */4 * * * /home/azureuser/prune_docker_images.sh > /dev/null 2>&1
 ```
 
-### 4. Verify the Cron Job
+### 3. Verify the Cron Job
 
 List the current cron jobs to ensure your job is added:
 
