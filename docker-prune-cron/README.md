@@ -30,7 +30,7 @@ crontab -e
 Add the following line to schedule the job:
 
 ```
-0 */4 * * * /home/azureuser/prune_docker_images.sh > /dev/null 2>&1
+0 */4 * * * /home/azureuser/prune_docker_images.sh
 ```
 
 ### 3. Verify the Cron Job
@@ -39,6 +39,12 @@ List the current cron jobs to ensure your job is added:
 
 ```sh
 crontab -l
+```
+You can also check the logged output:
+
+```sh
+
+cat docker_prune.log
 ```
 
 ## Troubleshooting
