@@ -49,7 +49,7 @@ cat docker_prune.log
 
 ## Troubleshooting
 
-Check cron service Status to ensure the cron service is running:
+Check cron service status to ensure the cron service is running:
 
 ```sh
 systemctl status cron
