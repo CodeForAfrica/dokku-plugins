@@ -44,7 +44,7 @@ You can also check the logged output:
 
 ```sh
 
-cat docker_prune.log
+cat docker_prune_cron.log
 ```
 
 ## Troubleshooting
